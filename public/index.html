@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SET100 RSI Scanner</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <header class="container">
+      <h1>SET100 RSI Scanner</h1>
+      <p class="muted">
+        สแกนหุ้นใน SET100 ด้วย RSI (ปรับ Period / Overbought / Oversold ได้) — แหล่งข้อมูลราคา: Yahoo Finance (ข้อมูลรายวัน)
+      </p>
+    </header>
+
+    <main class="container">
+      <section class="card">
+        <form id="form" class="form">
+          <label>
+            โหมด
+            <select id="mode">
+              <option value="rsi" selected>RSI Scanner</option>
+              <option value="rule">Rule Scanner</option>
+              <option value="backtest">Backtest</option>
+            </select>
+          </label>
+          <label>
+            Timeframe
+            <select id="timeframe">
+              <option value="1D" selected>1D</option>
+              <option value="1W">1W</option>
+            </select>
+          </label>
+          <label id="ruleWrap" style="display:none">
+            Rule
+            <select id="ruleId"></select>
+          </label>
+          <label>
+            Period
+            <input type="number" id="period" min="2" max="50" step="1" value="5" />
+          </label>
+          <label>
+            Overbought
+            <input type="number" id="overbought" min="50" max="100" step="1" value="80" />
+          </label>
+          <label>
+            Oversold
+            <input type="number" id="oversold" min="0" max="50" step="1" value="20" />
+          </label>
+          <label id="matchedOnlyWrap" style="display:none">
+            แสดงเฉพาะที่เข้าเงื่อนไข
+            <select id="matchedOnly">
+              <option value="false" selected>ไม่</option>
+              <option value="true">ใช่</option>
+            </select>
+          </label>
+          <label id="fromWrap" style="display:none">
+            From (YYYY-MM-DD)
+            <input type="text" id="from" placeholder="2025-01-01" />
+          </label>
+          <label id="toWrap" style="display:none">
+            To (YYYY-MM-DD)
+            <input type="text" id="to" placeholder="2025-06-30" />
+          </label>
+          <label id="holdBarsWrap" style="display:none">
+            Hold Bars
+            <input type="number" id="holdBars" min="1" max="260" step="1" value="5" />
+          </label>
+          <label id="feeBpsWrap" style="display:none">
+            Fee (bps/side)
+            <input type="number" id="feeBps" min="0" max="200" step="1" value="10" />
+          </label>
+          <label>
+            แสดงผล
+            <select id="filter">
+              <option value="all" selected>ทั้งหมด</option>
+              <option value="oversold">Oversold เท่านั้น</option>
+              <option value="overbought">Overbought เท่านั้น</option>
+              <option value="neutral">Neutral เท่านั้น</option>
+              <option value="error">Error เท่านั้น</option>
+            </select>
+          </label>
+          <button type="submit" id="scanBtn">Scan</button>
+        </form>
+
+        <div class="meta">
+          <span id="status" class="muted">พร้อมสแกน</span>
+          <span id="updated" class="muted"></span>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr id="theadRow">
+                <th>Symbol</th>
+                <th>RSI</th>
+                <th>Signal</th>
+                <th>Close</th>
+                <th>Date</th>
+                <th>Error</th>
+              </tr>
+            </thead>
+            <tbody id="tbody">
+              <tr>
+                <td colspan="6" class="muted">กด Scan เพื่อเริ่ม</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="note muted">
+        <strong>หมายเหตุ:</strong>
+        ค่า RSI คำนวณจากราคาปิดรายวัน (Daily Close) ของแต่ละหุ้น และผลลัพธ์ขึ้นกับคุณภาพ/ความครบถ้วนของข้อมูลจากผู้ให้บริการข้อมูล
+        (Yahoo Finance) รวมถึงวันหยุดตลาด/การขาดหายของราคาในบางวัน
+      </section>
+
+      <section class="card">
+        <h3 style="margin: 0 0 10px">Data Provenance</h3>
+        <div class="muted" id="prov">
+          กำลังโหลด…
+        </div>
+        <hr style="border:0;border-top:1px solid rgba(255,255,255,0.12);margin:12px 0" />
+        <div class="form" style="margin-top: 0">
+          <label style="grid-column: 1 / -1">
+            PDF URL (SET50/SET100 ประกาศทางการ) — เว้นว่างเพื่อใช้ค่าเริ่มต้น
+            <input type="text" id="setPdfUrl" placeholder="https://media.set.or.th/.../SET50_100_....pdf" />
+          </label>
+          <button id="updateSet100Btn" type="button">อัปเดตรายชื่อ SET100</button>
+        </div>
+      </section>
+    </main>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>

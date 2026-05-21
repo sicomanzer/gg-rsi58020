@@ -1,0 +1,22 @@
+{
+  "name": "set100-rsi-scanner",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local web scanner for SET100 using RSI (Yahoo Finance data source).",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "backtest": "node scripts/backtest.js",
+    "update:set100": "node scripts/update-set100.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "p-limit": "^6.2.0",
+    "pdf-parse": "^2.4.5",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^6.0.1",
+    "yahoo-finance2": "^3.14.1"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "RSI(5) <= 20 และ Close > EMA(200)",
+  "description": "กรอง Oversold เฉพาะตัวที่ยังยืนเหนือ EMA200 (แนวโน้มใหญ่ยังไม่เสีย)",
+  "timeframe": "1D",
+  "when": {
+    "all": [
+      {
+        "op": "<=",
+        "left": { "indicator": { "name": "RSI", "params": { "period": 5 } } },
+        "right": { "value": 20 }
+      },
+      {
+        "op": ">",
+        "left": { "price": "close" },
+        "right": { "indicator": { "name": "EMA", "params": { "period": 200 } } }
+      }
+    ]
+  }
+}
+

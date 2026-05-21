@@ -1,0 +1,15 @@
+{
+  "name": "RSI(5) Oversold (<=20)",
+  "description": "คัดหุ้นที่ RSI(5) <= 20",
+  "timeframe": "1D",
+  "when": {
+    "all": [
+      {
+        "op": "<=",
+        "left": { "indicator": { "name": "RSI", "params": { "period": 5 } } },
+        "right": { "value": 20 }
+      }
+    ]
+  }
+}
+

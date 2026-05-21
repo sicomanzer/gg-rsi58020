@@ -1,0 +1,15 @@
+{
+  "name": "RSI(5) Overbought (>=80)",
+  "description": "คัดหุ้นที่ RSI(5) >= 80",
+  "timeframe": "1D",
+  "when": {
+    "all": [
+      {
+        "op": ">=",
+        "left": { "indicator": { "name": "RSI", "params": { "period": 5 } } },
+        "right": { "value": 80 }
+      }
+    ]
+  }
+}
+
