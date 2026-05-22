@@ -67,6 +67,7 @@ node scripts/update-set100.js --url https://media.set.or.th/.../SET50_100_....pd
 ตัวเลือกเสริม:
 - `timeframe=1D` หรือ `timeframe=1W` (ค่าเริ่มต้น 1D)
 - `includeYield=true|false` (ค่าเริ่มต้น true) ให้ดึง Dividend Yield% จาก Yahoo เพิ่มเติม
+- `minYieldPercent=3` (ค่าเริ่มต้น 0) ตัวกรองเงินปันผลขั้นต่ำ (%). ถ้าตั้งค่านี้ ระบบจะบังคับ includeYield=true อัตโนมัติ
 - `concurrency` (default 8) จำกัดจำนวนการดึงข้อมูลพร้อมกัน
 - `cacheSeconds` (default 60) แคชผลลัพธ์เพื่อลดการยิง upstream
 - `symbols=ADVANC,AOT,CPALL` สแกนเฉพาะบางตัว (คั่นด้วย comma)
@@ -83,6 +84,7 @@ node scripts/update-set100.js --url https://media.set.or.th/.../SET50_100_....pd
 
 ตัวเลือกเสริม:
 - `includeYield=true|false` (ค่าเริ่มต้น true)
+- `minYieldPercent=3` (ค่าเริ่มต้น 0)
 - `matchedOnly=true` ให้ส่งกลับเฉพาะตัวที่เข้าเงื่อนไข
 - `period` เป็น “hint” ของ lookback (ระบบจะขยายเองถ้า rule ต้องใช้มากกว่า เช่น EMA(200))
 

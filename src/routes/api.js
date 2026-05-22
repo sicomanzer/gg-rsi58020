@@ -81,7 +81,9 @@ export function createApiRouter(deps) {
       const overbought = clamp(parseNumber(req.query.overbought, deps.config.defaults.overbought), 50, 100);
       const oversold = clamp(parseNumber(req.query.oversold, deps.config.defaults.oversold), 0, 50);
       const timeframe = normalizeTimeframe(req.query.timeframe ?? deps.config.defaults.timeframe);
-      const includeYield = String(req.query.includeYield ?? "true").toLowerCase() !== "false";
+      const minYieldPercent = clamp(parseNumber(req.query.minYieldPercent, 0), 0, 100);
+      const includeYieldRequested = String(req.query.includeYield ?? "true").toLowerCase() !== "false";
+      const includeYield = includeYieldRequested || minYieldPercent > 0;
       const concurrency = clamp(parseNumber(req.query.concurrency, deps.config.defaults.concurrency), 1, 20);
       const cacheSeconds = clamp(parseNumber(req.query.cacheSeconds, deps.config.defaults.cacheSeconds), 0, 600);
 
@@ -107,6 +109,7 @@ export function createApiRouter(deps) {
         oversold,
         timeframe,
         includeYield,
+        minYieldPercent,
         concurrency,
         symbolsMtimeMs: mtimeMs,
         symbolsParam,
@@ -157,12 +160,15 @@ export function createApiRouter(deps) {
           overbought,
           oversold,
           includeYield,
+          minYieldPercent,
           symbolsCount: symbols.length,
           set100ListMtimeMs: mtimeMs,
           generatedAt: new Date().toISOString()
         },
-        data: rows
+        data: minYieldPercent > 0 ? rows.filter((r) => typeof r.yieldPercent === "number" && r.yieldPercent >= minYieldPercent) : rows
       };
+
+      if (minYieldPercent > 0) result.meta.filteredCount = result.data.length;
 
       scanCache.set(cacheKey, { at: Date.now(), result });
       return res.json(result);
@@ -181,7 +187,9 @@ export function createApiRouter(deps) {
       const requestedPeriod = clamp(parseNumber(req.query.period, deps.config.defaults.period), 2, 300);
       const requiredLookback = estimateLookbackFromRule(rule);
       const period = Math.max(requestedPeriod, requiredLookback);
-      const includeYield = String(req.query.includeYield ?? "true").toLowerCase() !== "false";
+      const minYieldPercent = clamp(parseNumber(req.query.minYieldPercent, 0), 0, 100);
+      const includeYieldRequested = String(req.query.includeYield ?? "true").toLowerCase() !== "false";
+      const includeYield = includeYieldRequested || minYieldPercent > 0;
       const concurrency = clamp(parseNumber(req.query.concurrency, deps.config.defaults.concurrency), 1, 20);
       const cacheSeconds = clamp(parseNumber(req.query.cacheSeconds, deps.config.defaults.cacheSeconds), 0, 600);
 
@@ -208,6 +216,7 @@ export function createApiRouter(deps) {
         timeframe,
         period,
         includeYield,
+        minYieldPercent,
         concurrency,
         symbolsMtimeMs: mtimeMs,
         symbolsParam,
@@ -259,7 +268,8 @@ export function createApiRouter(deps) {
       );
 
       const matchedOnly = String(req.query.matchedOnly ?? "").toLowerCase() === "true";
-      const data = matchedOnly ? rows.filter((r) => r.matched && !r.error) : rows;
+      let data = matchedOnly ? rows.filter((r) => r.matched && !r.error) : rows;
+      if (minYieldPercent > 0) data = data.filter((r) => typeof r.yieldPercent === "number" && r.yieldPercent >= minYieldPercent);
 
       const result = {
         meta: {
@@ -270,11 +280,14 @@ export function createApiRouter(deps) {
           lookbackPeriod: period,
           requiredLookback,
           includeYield,
+          minYieldPercent,
           symbolsCount: symbols.length,
           generatedAt: new Date().toISOString()
         },
         data
       };
+
+      if (minYieldPercent > 0) result.meta.filteredCount = data.length;
 
       ruleScanCache.set(cacheKey, { at: Date.now(), result });
       return res.json(result);

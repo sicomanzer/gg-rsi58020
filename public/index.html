@@ -48,6 +48,10 @@
             Oversold
             <input type="number" id="oversold" min="0" max="50" step="1" value="20" />
           </label>
+          <label id="minYieldWrap">
+            Min Yield% (>=)
+            <input type="number" id="minYield" min="0" max="100" step="0.1" value="0" />
+          </label>
           <label id="matchedOnlyWrap" style="display:none">
             แสดงเฉพาะที่เข้าเงื่อนไข
             <select id="matchedOnly">
@@ -105,7 +109,7 @@
             </thead>
             <tbody id="tbody">
               <tr>
-                <td colspan="6" class="muted">กด Scan เพื่อเริ่ม</td>
+                <td colspan="8" class="muted">กด Scan เพื่อเริ่ม</td>
               </tr>
             </tbody>
           </table>

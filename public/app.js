@@ -18,6 +18,8 @@ const feeBpsEl = $("feeBps");
 const periodEl = $("period");
 const overboughtEl = $("overbought");
 const oversoldEl = $("oversold");
+const minYieldWrap = $("minYieldWrap");
+const minYieldEl = $("minYield");
 const filterEl = $("filter");
 const scanBtn = $("scanBtn");
 const statusEl = $("status");
@@ -40,6 +42,7 @@ function setModeUI() {
   toWrap.style.display = isBacktest ? "" : "none";
   holdBarsWrap.style.display = isBacktest ? "" : "none";
   feeBpsWrap.style.display = isBacktest ? "" : "none";
+  minYieldWrap.style.display = isBacktest ? "none" : "";
 
   // RSI scanner controls
   overboughtEl.disabled = isRule || isBacktest;
@@ -257,6 +260,7 @@ async function scan() {
   const period = Number(periodEl.value || 5);
   const overbought = Number(overboughtEl.value || 80);
   const oversold = Number(oversoldEl.value || 20);
+  const minYield = Number(minYieldEl.value || 0);
 
   let url = "/api/scan";
   const qs = new URLSearchParams({ timeframe });
@@ -305,6 +309,8 @@ async function scan() {
     qs.set("overbought", String(overbought));
     qs.set("oversold", String(oversold));
   }
+
+  if (minYield > 0) qs.set("minYieldPercent", String(minYield));
 
   scanBtn.disabled = true;
   statusEl.textContent = "กำลังดึงข้อมูลและคำนวณ RSI… (อาจใช้เวลาสักครู่)";
